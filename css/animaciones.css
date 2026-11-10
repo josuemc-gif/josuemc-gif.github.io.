@@ -1,0 +1,31 @@
+@keyframes popFeedback {
+  0% {
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  65% {
+    transform: translate(-50%, -52%) scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseWin {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.result-panel.success {
+  animation: pulseWin 1.2s ease-in-out infinite;
+}
+
+.result-panel.danger {
+  animation: pulseWin 1s ease-in-out infinite alternate;
+}

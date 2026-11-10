@@ -1,0 +1,35 @@
+.menu-panel {
+  width: min(90vw, 680px);
+  padding: clamp(26px, 6vw, 52px) clamp(20px, 5vw, 40px);
+  border-radius: 32px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(17, 24, 39, 0.75));
+  border: 2px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 32px 60px rgba(15, 23, 42, 0.5);
+  text-align: center;
+}
+
+.title-block {
+  margin-bottom: 30px;
+}
+
+.title-block h1 {
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  margin: 0;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: #f8fafc;
+  text-shadow: 0 8px 18px rgba(14, 165, 233, 0.35);
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+#menuScreen {
+  background:
+    linear-gradient(rgba(8, 47, 73, 0.35), rgba(15, 23, 42, 0.55)),
+    url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+}
