@@ -4,85 +4,58 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>¡Aprueba la clase!</title>
-    <link rel="stylesheet" href="css/estilos.css?v=20261110" />
-    <link rel="stylesheet" href="css/menu.css?v=20261110" />
-    <link rel="stylesheet" href="css/juego.css?v=20261110" />
-    <link rel="stylesheet" href="css/animaciones.css?v=20261110" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="app">
-      <section id="menuScreen" class="screen active">
-        <div class="menu-panel">
-          <div class="title-block">
-            <p class="eyebrow">Curso de programación</p>
-            <h1>¡Aprueba la clase!</h1>
+      <header class="top-ui">
+        <div class="score-panel pixel-card">
+          <div class="score-label">
+            <span class="star">★</span>
+            <span>Puntos: <strong id="scoreValue">50</strong> / 100</span>
           </div>
-
-          <div class="menu-buttons">
-            <button id="startButton" class="primary-btn">Iniciar partida</button>
-            <button id="instructionsButton" class="secondary-btn">Instrucciones</button>
-            <button id="creditsButton" class="secondary-btn">Créditos</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="gameScreen" class="screen hidden">
-        <div class="hud">
-          <div class="hud-item">
-            <span class="label">Nivel</span>
-            <strong id="levelLabel">1</strong>
-          </div>
-          <div class="hud-item wide">
-            <span class="label">Puntuación</span>
-            <div class="score-bar">
-              <div id="scoreFill" class="score-fill"></div>
-            </div>
-            <strong id="scoreLabel">50</strong>
-          </div>
-          <div class="hud-item">
-            <span class="label">Pregunta</span>
-            <strong id="questionCounter">1/1</strong>
+          <div class="progress-bar">
+            <div id="scoreFill" class="progress-fill"></div>
           </div>
         </div>
 
-        <div class="question-panel">
-          <div id="teacherBubble" class="teacher-bubble">¡Vamos a programar!</div>
-          <div id="questionText" class="question-text">Cargando pregunta...</div>
+        <div class="side-panels">
+          <div class="pill pixel-card">
+            <span>Nivel: <strong id="levelValue">1</strong></span>
+          </div>
+          <div class="pill pixel-card">
+            <span>Pregunta: <strong id="questionValue">1 / 15</strong></span>
+          </div>
+        </div>
+      </header>
+
+      <main class="classroom-scene">
+        <div class="classroom-bg"></div>
+
+        <div class="teacher-stage">
+          <div id="teacher" class="teacher-sprite" role="img" aria-label="Profesor examinador"></div>
         </div>
 
-        <canvas id="gameCanvas" width="960" height="520"></canvas>
-
-        <div id="feedbackBox" class="feedback hidden"></div>
-      </section>
-
-      <section id="levelScreen" class="screen hidden">
-        <div class="result-panel">
-          <h2>¡Nivel aprobado!</h2>
-          <p id="levelResultText">Has superado esta etapa.</p>
-          <p id="levelScoreText" class="score-summary">Puntuación: 0</p>
-          <button id="nextLevelButton" class="primary-btn">Continuar</button>
+        <div class="question-panel pixel-card" id="questionPanel">
+          <span id="questionText">Cargando pregunta...</span>
         </div>
-      </section>
 
-      <section id="loseScreen" class="screen hidden">
-        <div class="result-panel danger">
-          <h2>¡Has reprobado la clase!</h2>
-          <p id="loseScoreText" class="score-summary">Puntuación final: 0</p>
-          <button id="retryButton" class="primary-btn">Intentar de nuevo</button>
-          <button id="menuButton" class="secondary-btn" data-target="menu">Volver al menú</button>
-        </div>
-      </section>
+        <div id="answersArea" class="answers-area"></div>
 
-      <section id="victoryScreen" class="screen hidden">
-        <div class="result-panel success">
-          <h2>¡Curso completado!</h2>
-          <p>Has terminado satisfactoriamente el curso de programación.</p>
-          <p id="finalScoreText" class="score-summary">Puntuación final: 0</p>
-          <button id="playAgainButton" class="primary-btn">Jugar otra vez</button>
+        <div class="student-stage">
+          <div id="student" class="student-sprite" role="img" aria-label="Alumno sentado"></div>
         </div>
-      </section>
+
+        <div id="toast" class="toast hidden"></div>
+        <div id="resultOverlay" class="result-overlay hidden">
+          <div class="popup pixel-card">
+            <h2 id="resultTitle">Aprobado</h2>
+            <p id="resultText">Nivel superado</p>
+          </div>
+        </div>
+      </main>
     </div>
 
-    <script type="module" src="js/main.js?v=20261110"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
