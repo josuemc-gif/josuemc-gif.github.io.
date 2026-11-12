@@ -30,7 +30,7 @@ const LEVELS = [
     questions: [
       { question: "¿Qué es un tipo de dato?", options: ["Una categoría para clasificar los valores.", "Una acción repetitiva.", "Un bucle especial.", "Un archivo de configuración."], correctIndex: 0 },
       { question: "¿Cuál es un tipo de dato numérico entero?", options: ["'hola'", "42", "true", "['a','b']"], correctIndex: 1 },
-      { question: "¿Qué es una constante?", options: ["Un dato que cambia en tiempo real.", "Un dato fijo durante la ejecución.", "Un nombre de función.", "Una etiqueta HTML."], correctIndex: 1 },
+      { question: "¿Qué sucede si se intenta reasignar una constante en JavaScript?", options: ["El cambio siempre se acepta.", "Se produce un error.", "Se convierte en una función.", "Se reinicia el navegador."], correctIndex: 1 },
       { question: "¿Qué hace el operador +?", options: ["Compara valores.", "Concatena o suma datos.", "Crea un bucle.", "Reinicia el programa."], correctIndex: 1 },
       { question: "¿Qué es un operador lógico?", options: ["Un símbolo para comparar o combinar condiciones.", "Una variable global.", "Un archivo CSS.", "Una base de datos."], correctIndex: 0 },
       { question: "¿Qué significa && en lógica?", options: ["O", "Y", "No", "Igual"], correctIndex: 1 },
@@ -98,7 +98,7 @@ const LEVELS = [
     penalty: 8,
     questions: [
       { question: "¿Qué es una clase?", options: ["Una plantilla para crear objetos.", "Un archivo HTML.", "Un arreglo ordenado.", "Una condición."], correctIndex: 0 },
-      { question: "¿Qué es un objeto?", options: ["Una instancia creada a partir de una clase.", "Una variable global.", "Un archivo CSS.", "Un comentario."], correctIndex: 0 },
+      { question: "¿Qué describe la identidad de un objeto?", options: ["La clase de estilo que lo muestra.", "La referencia que permite distinguir esa instancia de otras.", "El valor de retorno de su constructor.", "La cantidad de métodos estáticos."], correctIndex: 1 },
       { question: "¿Qué es la herencia?", options: ["La capacidad de una clase de reutilizar atributos y métodos de otra.", "Una forma de guardar texto.", "Un ciclo while.", "Una instrucción if."], correctIndex: 0 },
       { question: "¿Qué es el encapsulamiento?", options: ["Ocultar detalles internos y exponer solo lo necesario.", "Crear nuevos arreglos.", "Cambiar el color del DOM.", "Definir acceso a un servidor."], correctIndex: 0 },
       { question: "¿Qué es el polimorfismo?", options: ["La capacidad de objetos distintos de responder de forma distinta al mismo mensaje.", "Un tipo de síntaxis.", "Una prueba de lógica.", "Una variable de texto."], correctIndex: 0 },
@@ -169,7 +169,7 @@ const LEVELS = [
       { question: "¿Qué son las estructuras de datos?", options: ["Formas de organizar y almacenar datos para accederlos eficientemente.", "Variables globales.", "Archivos CSS.", "Herramientas del navegador."], correctIndex: 0 },
       { question: "¿Qué es una pila?", options: ["Una estructura LIFO: último en entrar, primero en salir.", "Una función de consulta.", "Una clase abstracta.", "Un evento DOM."], correctIndex: 0 },
       { question: "¿Qué es una cola?", options: ["Una estructura FIFO: primero en entrar, primero en salir.", "Un tipo de bucle.", "Un lenguaje de marcado.", "Una tabla SQL."], correctIndex: 0 },
-      { question: "¿Qué es la recursividad?", options: ["Cuando una función se llama a sí misma para resolver un problema.", "Un bloque switch.", "Un evento de clic.", "Un comentario."], correctIndex: 0 },
+      { question: "¿Qué puede ocurrir si una función recursiva nunca alcanza un caso base?", options: ["Las llamadas pueden continuar hasta agotar recursos.", "La función se convierte en una variable.", "El código se ejecuta una sola vez.", "El navegador agrega automáticamente un caso base."], correctIndex: 0 },
       { question: "¿Qué es un algoritmo de ordenamiento?", options: ["Un método para ordenar datos.", "Un tipo de variable.", "Un elemento del DOM.", "Un modelo de base de datos."], correctIndex: 0 },
       { question: "¿Qué es el manejo de errores?", options: ["Prever y controlar situaciones inesperadas durante la ejecución.", "Un tipo de CSS.", "Un lenguaje HTML.", "Una base de datos."], correctIndex: 0 },
       { question: "¿Qué es una API?", options: ["Una interfaz para comunicar software entre aplicaciones.", "Un lenguaje SQL.", "Una estructura de control.", "Una etiqueta HTML."], correctIndex: 0 },
@@ -185,18 +185,171 @@ const LEVELS = [
   }
 ];
 
-const QUESTION_TIME_SECONDS = 30;
+const RETRY_QUESTIONS = [
+  [
+    { question: "¿Qué representa un diagrama de flujo?", options: ["Los pasos de un proceso mediante símbolos conectados.", "Una lista de variables del sistema.", "Un lenguaje ejecutable.", "Un archivo de datos."], correctIndex: 0 },
+    { question: "¿Qué es el pseudocódigo?", options: ["Una versión compilada de un programa.", "Una base de datos temporal.", "Una descripción de un algoritmo con lenguaje sencillo.", "Un tipo de hardware."], correctIndex: 2 },
+    { question: "¿Qué se entiende por código fuente?", options: ["Las instrucciones escritas en un lenguaje de programación.", "El resultado de una impresión.", "Una copia de seguridad automática.", "La memoria física del equipo."], correctIndex: 0 },
+    { question: "¿Qué hace un intérprete al ejecutar código?", options: ["Diseña pantallas para el usuario.", "Almacena archivos en la nube.", "Reemplaza el sistema operativo.", "Lee y ejecuta instrucciones del programa."], correctIndex: 3 },
+    { question: "¿Qué significa depurar un programa?", options: ["Cambiar el nombre del archivo.", "Buscar y corregir errores en el código.", "Traducirlo a otro idioma.", "Borrar todas sus variables."], correctIndex: 1 },
+    { question: "¿Qué es el lenguaje máquina?", options: ["Instrucciones codificadas que el procesador puede ejecutar.", "Una colección de diagramas.", "Un editor de texto sencillo.", "Un formato de hoja de cálculo."], correctIndex: 0 },
+    { question: "¿Qué representa un literal en el código?", options: ["Una instrucción para repetir acciones.", "Una referencia a una carpeta.", "Un valor escrito directamente en el código.", "Un error del programa."], correctIndex: 2 },
+    { question: "¿Qué es un entorno de ejecución?", options: ["Una herramienta para dibujar algoritmos.", "Un conjunto de reglas para nombrar archivos.", "Una conexión entre dos monitores.", "El entorno que permite ejecutar un programa."], correctIndex: 3 },
+    { question: "¿Cómo se suele llamar a un defecto que causa un fallo en un programa?", options: ["Un parámetro.", "Un bug.", "Una constante.", "Una salida."], correctIndex: 1 },
+    { question: "¿Para qué sirve una prueba de escritorio?", options: ["Para instalar el programa.", "Para medir la velocidad de Internet.", "Para seguir manualmente los pasos y valores de un algoritmo.", "Para cambiar el diseño de una ventana."], correctIndex: 2 },
+    { question: "¿Qué suele indicar un error de ejecución?", options: ["Que ocurrió un problema mientras el programa funcionaba.", "Que el teclado está apagado.", "Que la pantalla tiene poco brillo.", "Que el archivo usa una extensión válida."], correctIndex: 0 },
+    { question: "¿Para qué sirve documentar un programa?", options: ["Para evitar que el código se ejecute.", "Para cambiar sus resultados automáticamente.", "Para ocupar menos memoria.", "Para explicar su propósito y facilitar su comprensión."], correctIndex: 3 },
+    { question: "¿Qué tarea permite realizar un editor de código?", options: ["Reparar componentes físicos.", "Escribir y modificar archivos de código.", "Crear una conexión eléctrica.", "Convertir una imagen en una base de datos."], correctIndex: 1 },
+    { question: "¿Qué es una biblioteca de código?", options: ["Un dispositivo que guarda archivos.", "Una lista de errores del sistema.", "Código reutilizable que ofrece funciones o herramientas.", "Un tipo de monitor."], correctIndex: 2 },
+    { question: "¿Qué característica debe tener un algoritmo que termina correctamente?", options: ["Debe finalizar después de una cantidad finita de pasos.", "Debe repetir cada paso para siempre.", "Debe depender de Internet.", "Debe usar únicamente números."], correctIndex: 0 }
+  ],
+  [
+    { question: "¿Qué tipo de valor puede guardar una variable booleana?", options: ["Una dirección web.", "Un valor verdadero o falso.", "Una imagen.", "Una lista ordenada."], correctIndex: 1 },
+    { question: "¿Cuál de estos valores es un número decimal?", options: ["\"nueve\"", "false", "8.5", "[2, 4]"], correctIndex: 2 },
+    { question: "¿Qué operador compara tanto el valor como el tipo en JavaScript?", options: ["===", "=", "+", "%"], correctIndex: 0 },
+    { question: "¿Qué operador lógico invierte una condición?", options: ["&&", "||", "==", "!"], correctIndex: 3 },
+    { question: "¿Qué es una expresión en programación?", options: ["Una carpeta con archivos.", "Una combinación que se evalúa para producir un valor.", "Un comentario que se ejecuta.", "Una tecla del teclado."], correctIndex: 1 },
+    { question: "¿Qué hace el operador ++ aplicado a una variable numérica?", options: ["Aumenta su valor en uno.", "La convierte en texto.", "La elimina de memoria.", "La divide entre dos."], correctIndex: 0 },
+    { question: "¿Cuál es el resultado de calcular 10 / 2?", options: ["5", "8", "12", "20"], correctIndex: 0 },
+    { question: "¿Qué tipo de dato representa el valor \"42\" entre comillas?", options: ["Booleano.", "Número entero.", "Objeto.", "Cadena de texto."], correctIndex: 3 },
+    { question: "¿Qué acción realiza el operador de asignación =?", options: ["Compara dos valores.", "Guarda un valor en una variable.", "Multiplica dos números.", "Invierte una condición."], correctIndex: 1 },
+    { question: "¿Qué devuelve typeof 42 en JavaScript?", options: ["\"text\"", "\"boolean\"", "\"number\"", "\"object\""], correctIndex: 2 },
+    { question: "¿Qué expresa normalmente el valor null?", options: ["La ausencia intencional de un valor.", "Un número infinito.", "Una cadena con espacios.", "Un ciclo terminado."], correctIndex: 0 },
+    { question: "¿Qué indica NaN en JavaScript?", options: ["Una variable nueva.", "Un número negativo.", "Una condición verdadera.", "Un resultado que no es un número válido."], correctIndex: 3 },
+    { question: "¿Qué operador representa el OR lógico en JavaScript?", options: ["&&", "||", "!", "==="], correctIndex: 1 },
+    { question: "¿Qué valor produce Number(\"8\") en JavaScript?", options: ["El número 8.", "El texto Number.", "El valor false.", "El valor null."], correctIndex: 0 },
+    { question: "¿Qué resultado puede producir una expresión booleana?", options: ["Una imagen o un audio.", "Una función o una clase.", "Verdadero o falso.", "Una dirección de archivo."], correctIndex: 2 }
+  ],
+  [
+    { question: "¿Qué operador se usa para escribir una condición ternaria?", options: ["??", "=>", "?:", "&&"], correctIndex: 2 },
+    { question: "¿Qué función cumple default dentro de un switch?", options: ["Se ejecuta si ningún case coincide.", "Repite todos los casos.", "Declara una variable global.", "Finaliza siempre el programa."], correctIndex: 0 },
+    { question: "¿Qué es un ciclo anidado?", options: ["Un ciclo sin condición.", "Una condición dentro de un dato.", "Un ciclo colocado dentro de otro ciclo.", "Un programa sin instrucciones."], correctIndex: 2 },
+    { question: "¿Qué puede ocurrir si la condición de un while nunca cambia?", options: ["El ciclo se convierte en una función.", "El ciclo puede continuar indefinidamente.", "El programa borra la condición.", "El ciclo se ejecuta una vez."], correctIndex: 1 },
+    { question: "¿En qué momento se comprueba la condición de do while?", options: ["Antes de ejecutar el cuerpo.", "Solo al cerrar el programa.", "Después de ejecutar el cuerpo del ciclo.", "Nunca se comprueba."], correctIndex: 2 },
+    { question: "¿Qué instrucción suele terminar un caso de switch para evitar continuar al siguiente?", options: ["break", "returning", "repeat", "skip"], correctIndex: 0 },
+    { question: "¿Qué es una rama en una estructura condicional?", options: ["Un valor almacenado en memoria.", "Un camino de instrucciones elegido según una condición.", "Una repetición sin fin.", "Una operación de suma."], correctIndex: 1 },
+    { question: "¿Qué puede pasar si un case de switch no termina con break?", options: ["Se borra el valor evaluado.", "Se reinicia el switch.", "La siguiente rama puede ejecutarse también.", "Se declara una función."], correctIndex: 2 },
+    { question: "¿Qué hace continue en la iteración actual de un ciclo?", options: ["Salta al siguiente paso del ciclo.", "Finaliza todos los ciclos.", "Cambia una condición verdadera a falsa.", "Ejecuta una rama default."], correctIndex: 0 },
+    { question: "¿Qué expresión suele actualizar el contador de un for?", options: ["Una etiqueta HTML.", "Una condición de salida del programa.", "Una declaración de clase.", "Un incremento o decremento del contador."], correctIndex: 3 },
+    { question: "¿Qué describe la condición de salida de un ciclo?", options: ["El nombre de la variable global.", "Cuándo debe dejar de repetirse el ciclo.", "La cantidad de funciones.", "El formato de una cadena."], correctIndex: 1 },
+    { question: "Si una condición de if es verdadera en una cadena if/else if, ¿qué ocurre normalmente?", options: ["Se ejecuta esa rama y se omiten las alternativas restantes.", "Se ejecutan todas las ramas.", "El programa convierte if en un ciclo.", "Se borra la condición."], correctIndex: 0 },
+    { question: "¿Para qué puede anidarse una condición dentro de otra?", options: ["Para guardar una imagen.", "Para detener la computadora.", "Para comprobar una condición adicional dentro de un caso.", "Para convertir un número en texto."], correctIndex: 2 },
+    { question: "¿Qué se evalúa normalmente en cada repetición de un while?", options: ["El título del archivo.", "La cantidad de funciones.", "La salida de pantalla.", "La condición que controla el ciclo."], correctIndex: 3 },
+    { question: "¿Qué es un ciclo controlado por contador?", options: ["Un ciclo que usa un contador para controlar sus repeticiones.", "Un ciclo que procesa imágenes.", "Una condición que no se evalúa.", "Un switch con varios valores."], correctIndex: 0 }
+  ],
+  [
+    { question: "¿Qué método de arreglo crea una nueva lista transformando cada elemento?", options: ["map", "push", "pop", "join"], correctIndex: 0 },
+    { question: "¿Qué método de arreglo conserva solo los elementos que cumplen una condición?", options: ["shift", "filter", "fill", "join"], correctIndex: 1 },
+    { question: "¿Qué método puede combinar los elementos de un arreglo en un solo resultado?", options: ["slice", "unshift", "reduce", "reverse"], correctIndex: 2 },
+    { question: "¿Qué es una función flecha en JavaScript?", options: ["Una forma sintáctica de escribir una función usando =>.", "Una función que solo dibuja gráficos.", "Un ciclo que recorre una cadena.", "Una clase sin métodos."], correctIndex: 0 },
+    { question: "¿Qué describe una función pura?", options: ["Siempre modifica una variable global.", "Devuelve el mismo resultado para la misma entrada sin efectos secundarios.", "Solo puede ejecutarse una vez.", "No puede recibir parámetros."], correctIndex: 1 },
+    { question: "¿Qué es un efecto secundario de una función?", options: ["Un cambio observable fuera de su valor de retorno.", "El nombre de su primer parámetro.", "El resultado de una suma.", "Una función sin cuerpo."], correctIndex: 0 },
+    { question: "¿Qué permite el operador spread en un arreglo?", options: ["Detener una función.", "Declarar una condición.", "Expandir sus elementos en otro arreglo o llamada.", "Convertirlo en una clase."], correctIndex: 2 },
+    { question: "¿Qué significa que una función sea de orden superior?", options: ["Que recibe funciones o devuelve una función.", "Que solo acepta números enteros.", "Que se ejecuta antes del programa.", "Que no puede retornar valores."], correctIndex: 0 },
+    { question: "¿Qué puede devolver una función si no incluye return?", options: ["Siempre cero.", "undefined.", "Una cadena vacía.", "Un error de sintaxis."], correctIndex: 1 },
+    { question: "¿Qué palabra clave permite exportar una función desde un módulo ES?", options: ["include", "public", "export", "module"], correctIndex: 2 },
+    { question: "¿Qué debe tener una función recursiva para detener sus llamadas?", options: ["Un caso base.", "Una variable global.", "Una clase abstracta.", "Un selector CSS."], correctIndex: 0 },
+    { question: "¿Qué ofrece el encadenamiento opcional con ?.?", options: ["Acceso a una propiedad sin error si el valor previo es nullish.", "Una forma de repetir un arreglo.", "Una comparación estricta.", "Una declaración constante."], correctIndex: 0 },
+    { question: "¿Qué representa el parámetro rest en una función?", options: ["El primer argumento únicamente.", "Un comentario.", "Los argumentos restantes reunidos en un arreglo.", "Un valor que detiene la función."], correctIndex: 2 },
+    { question: "¿Qué ventaja ofrece separar código en módulos?", options: ["Organizar funcionalidades en archivos reutilizables.", "Evitar que se usen funciones.", "Hacer globales todas las variables.", "Eliminar la necesidad de nombres."], correctIndex: 0 },
+    { question: "¿Qué es una clausura o closure?", options: ["Una función que conserva acceso al ámbito donde fue creada.", "Una función que termina el navegador.", "Un operador lógico.", "Una lista ordenada de clases."], correctIndex: 0 }
+  ],
+  [
+    { question: "¿Qué es un método estático?", options: ["Un método que pertenece a la clase y no requiere una instancia.", "Un método que solo modifica el HTML.", "Un constructor privado.", "Un atributo sin nombre."], correctIndex: 0 },
+    { question: "Dentro de un método de instancia, ¿a qué suele referirse this?", options: ["Siempre a la clase padre.", "Al objeto que está usando el método.", "A la última variable declarada.", "Al archivo de la clase."], correctIndex: 1 },
+    { question: "¿Qué significa sobrescribir un método heredado?", options: ["Eliminar toda la clase.", "Cambiar el nombre del constructor.", "Definir en la subclase una versión propia del método.", "Convertirlo en una propiedad CSS."], correctIndex: 2 },
+    { question: "¿Cómo se declara un campo privado en una clase moderna de JavaScript?", options: ["Con un signo # al inicio del nombre.", "Con dos puntos al final.", "Con la palabra global.", "Con un asterisco al final."], correctIndex: 0 },
+    { question: "¿Para qué se usa super dentro de una subclase?", options: ["Para crear una variable global.", "Para llamar al constructor o métodos de la clase padre.", "Para hacer pública una propiedad.", "Para cerrar el programa."], correctIndex: 1 },
+    { question: "¿Qué comprueba el operador instanceof?", options: ["Si un valor es una instancia de cierto constructor o clase.", "Si dos cadenas tienen igual longitud.", "Si una función está vacía.", "Si un archivo es CSS."], correctIndex: 0 },
+    { question: "¿Qué es una propiedad estática?", options: ["Una propiedad que pertenece a la clase, no a cada instancia.", "Una propiedad sin valor.", "Un atributo exclusivo del constructor padre.", "Un dato guardado en un arreglo."], correctIndex: 0 },
+    { question: "¿Qué es el prototipo de un objeto en JavaScript?", options: ["Un archivo de estilos.", "Un objeto del que puede heredar propiedades y métodos.", "Una función que ordena números.", "Una copia de la interfaz."], correctIndex: 1 },
+    { question: "¿Qué describe una asociación entre clases?", options: ["Una relación en la que objetos colaboran o se conocen.", "La eliminación de una clase.", "Una clase sin métodos.", "La conversión de texto a número."], correctIndex: 0 },
+    { question: "¿Qué busca normalmente una clase de tipo fábrica?", options: ["Crear y devolver objetos.", "Imprimir el código fuente.", "Reemplazar todos los métodos.", "Convertir una clase en CSS."], correctIndex: 0 },
+    { question: "¿Qué es un invariante de una clase?", options: ["Una condición que debe mantenerse válida para sus objetos.", "Una instrucción que detiene el programa.", "Un método sin retorno.", "Una variable que cambia de tipo."], correctIndex: 0 },
+    { question: "¿Qué caracteriza a un objeto de valor?", options: ["Se identifica principalmente por sus datos y suele tratarse como inmutable.", "Siempre contiene una base de datos.", "Solo existe como clase abstracta.", "Se identifica por su ubicación en pantalla."], correctIndex: 0 },
+    { question: "¿Qué significa delegar comportamiento en programación orientada a objetos?", options: ["Pedir a otro objeto que realice una responsabilidad.", "Duplicar cada método en todas las clases.", "Eliminar relaciones entre objetos.", "Convertir propiedades en variables globales."], correctIndex: 0 },
+    { question: "¿Qué indica una relación de composición fuerte entre objetos?", options: ["Que el contenedor administra partes que dependen de él.", "Que dos objetos no pueden comunicarse.", "Que una clase no tiene constructor.", "Que todos los métodos son estáticos."], correctIndex: 0 },
+    { question: "¿Qué ventaja puede ofrecer una interfaz en un lenguaje que la admite?", options: ["Definir un contrato de operaciones que una clase debe proporcionar.", "Guardar automáticamente cada instancia.", "Ejecutar métodos sin código.", "Reemplazar todos los tipos de datos."], correctIndex: 0 }
+  ],
+  [
+    { question: "¿Qué suele solicitar una petición HTTP GET?", options: ["Obtener un recurso del servidor.", "Borrar archivos locales.", "Cambiar estilos CSS.", "Cerrar el navegador."], correctIndex: 0 },
+    { question: "¿Qué organiza principalmente Flexbox en CSS?", options: ["Elementos en una dimensión, por fila o columna.", "Tablas en una base de datos.", "Eventos del teclado.", "Archivos del servidor."], correctIndex: 0 },
+    { question: "¿Para qué sirve la etiqueta meta viewport?", options: ["Adaptar el área de visualización a la pantalla del dispositivo.", "Crear un menú desplegable.", "Enviar datos de formulario.", "Añadir una imagen."], correctIndex: 0 },
+    { question: "¿Qué aporta el atributo alt de una imagen?", options: ["Un texto alternativo que describe la imagen.", "Una hoja de estilos automática.", "Una dirección de base de datos.", "Un evento de clic."], correctIndex: 0 },
+    { question: "¿Para qué se asocia una etiqueta label con un campo de formulario?", options: ["Para identificar el campo y facilitar su uso.", "Para convertirlo en un enlace externo.", "Para ocultar el valor ingresado.", "Para ejecutar una consulta."], correctIndex: 0 },
+    { question: "¿Qué describe la propagación de eventos en el DOM?", options: ["Cómo un evento puede recorrer elementos relacionados en el árbol.", "Cómo se descarga una imagen.", "Cómo se ordenan reglas CSS.", "Cómo se guarda un archivo."], correctIndex: 0 },
+    { question: "¿Qué permite hacer la función fetch en el navegador?", options: ["Realizar solicitudes de red y recibir respuestas.", "Crear una clase CSS.", "Cambiar el tamaño de pantalla.", "Compilar HTML a SQL."], correctIndex: 0 },
+    { question: "¿Qué tipo de información puede guardar localStorage?", options: ["Pares de claves y valores de texto en el navegador.", "Procesos del sistema operativo.", "Archivos del servidor.", "Conexiones físicas de red."], correctIndex: 0 },
+    { question: "¿Qué significa normalmente el código HTTP 404?", options: ["El recurso solicitado no fue encontrado.", "La solicitud se completó correctamente.", "El navegador cambió de idioma.", "El servidor creó una tabla."], correctIndex: 0 },
+    { question: "¿Para qué se usa principalmente un elemento a de HTML?", options: ["Crear un enlace a otro recurso o ubicación.", "Agrupar filas de una tabla.", "Definir una condición.", "Aplicar un diseño de cuadrícula."], correctIndex: 0 },
+    { question: "¿Qué tipo de contenido suele colocarse dentro de main?", options: ["El contenido principal de la página.", "Solo los metadatos.", "Los estilos globales.", "Los errores del navegador."], correctIndex: 0 },
+    { question: "¿Qué controla el modelo de caja de CSS?", options: ["Contenido, relleno, borde y margen de un elemento.", "Los permisos de una base de datos.", "El orden de ejecución de JavaScript.", "La dirección de una solicitud."], correctIndex: 0 },
+    { question: "¿En qué se especializa CSS Grid?", options: ["Organizar elementos en filas y columnas.", "Reproducir archivos de audio.", "Validar contraseñas.", "Enviar solicitudes al servidor."], correctIndex: 0 },
+    { question: "¿Qué efecto tiene el atributo defer en un script externo?", options: ["Lo ejecuta después de analizar el documento HTML.", "Lo convierte en una hoja de estilos.", "Lo ejecuta antes de descargar el HTML.", "Impide que se cargue."], correctIndex: 0 },
+    { question: "¿Qué identifica una URL?", options: ["La ubicación de un recurso en una red.", "El tipo de dato de una variable.", "La clase principal de CSS.", "La memoria del navegador."], correctIndex: 0 }
+  ],
+  [
+    { question: "¿Qué garantiza normalmente una restricción UNIQUE?", options: ["Que ciertos valores no se repitan en una columna o combinación.", "Que todas las filas tengan el mismo valor.", "Que la tabla no tenga columnas.", "Que una consulta no use filtros."], correctIndex: 0 },
+    { question: "¿Qué es una transacción en una base de datos?", options: ["Un grupo de operaciones que se trata como una unidad.", "Un tipo de índice visual.", "Una columna calculada del navegador.", "Una instrucción para crear una clase."], correctIndex: 0 },
+    { question: "¿Qué significa ACID en el contexto de transacciones?", options: ["Atomicidad, consistencia, aislamiento y durabilidad.", "Acceso, consulta, índice y dato.", "Archivo, copia, inserción y eliminación.", "Autorización, clave, identidad y dominio."], correctIndex: 0 },
+    { question: "¿Qué cláusula filtra filas antes de agrupar resultados en SQL?", options: ["WHERE", "ORDER BY", "SELECT", "AS"], correctIndex: 0 },
+    { question: "¿Para qué se usa GROUP BY?", options: ["Agrupar filas que comparten valores en ciertas columnas.", "Ordenar archivos del proyecto.", "Eliminar todas las tablas.", "Cambiar el tipo de consulta."], correctIndex: 0 },
+    { question: "¿Qué permite filtrar grupos después de aplicar GROUP BY?", options: ["HAVING", "VALUES", "INSERT", "LIMIT"], correctIndex: 0 },
+    { question: "¿Qué hace ORDER BY en una consulta SQL?", options: ["Ordena las filas del resultado.", "Agrega una columna.", "Cambia la clave primaria.", "Inicia una transacción."], correctIndex: 0 },
+    { question: "¿Qué representa el valor NULL en una columna?", options: ["La ausencia o falta de un valor conocido.", "El número cero en todos los casos.", "Una cadena vacía obligatoria.", "Una clave primaria duplicada."], correctIndex: 0 },
+    { question: "¿Qué es una clave primaria compuesta?", options: ["Una clave formada por más de una columna.", "Una clave que siempre contiene texto.", "Una clave compartida por todas las tablas.", "Un índice que no puede consultarse."], correctIndex: 0 },
+    { question: "¿Qué es la integridad referencial?", options: ["La coherencia de las referencias entre tablas relacionadas.", "El orden alfabético de todas las columnas.", "Una forma de comprimir copias.", "Un formato de páginas web."], correctIndex: 0 },
+    { question: "¿Qué devuelve COUNT(*) en SQL?", options: ["La cantidad de filas seleccionadas.", "El promedio de una columna.", "El nombre de la tabla.", "La primera clave primaria."], correctIndex: 0 },
+    { question: "¿Qué es una vista en una base de datos relacional?", options: ["Una consulta guardada que presenta datos como una tabla virtual.", "Una copia física de cada índice.", "Una contraseña de acceso.", "Un archivo de estilos."], correctIndex: 0 },
+    { question: "¿Qué instrucción confirma los cambios de una transacción?", options: ["COMMIT", "ROLLBACK", "SELECT", "GROUP"], correctIndex: 0 },
+    { question: "¿Qué hace ROLLBACK en una transacción?", options: ["Deshace los cambios no confirmados.", "Ordena filas por fecha.", "Agrega una clave foránea.", "Cuenta las columnas."], correctIndex: 0 },
+    { question: "¿Qué ventaja puede ofrecer un índice de base de datos?", options: ["Acelerar ciertas búsquedas, a cambio de espacio y mantenimiento.", "Eliminar la necesidad de guardar datos.", "Garantizar que toda consulta sea más rápida.", "Convertir tablas en páginas web."], correctIndex: 0 }
+  ],
+  [
+    { question: "¿Qué técnica guarda resultados previos para evitar repetir cálculos?", options: ["Memoización.", "Encapsulamiento.", "Normalización.", "Propagación."], correctIndex: 0 },
+    { question: "¿Qué caracteriza a la programación dinámica?", options: ["Resolver subproblemas y reutilizar sus resultados.", "Duplicar todos los cálculos.", "Elegir siempre una opción al azar.", "Eliminar las condiciones de salida."], correctIndex: 0 },
+    { question: "¿Qué estrategia usa un algoritmo voraz?", options: ["Elegir una opción localmente mejor en cada paso.", "Probar todas las soluciones en paralelo.", "Ordenar siempre los datos al revés.", "Guardar cada resultado en una base de datos."], correctIndex: 0 },
+    { question: "¿Qué propiedad mantiene un algoritmo de ordenamiento estable?", options: ["Conserva el orden relativo de elementos con claves iguales.", "Siempre usa memoria constante.", "Ordena únicamente números negativos.", "Produce el mismo arreglo sin importar la entrada."], correctIndex: 0 },
+    { question: "¿Qué operación suele ser eficiente en una tabla hash?", options: ["Buscar un valor por su clave, en promedio.", "Recorrer elementos siempre en orden.", "Encontrar el mínimo sin inspeccionar datos.", "Ordenar todos los valores automáticamente."], correctIndex: 0 },
+    { question: "¿Qué explora primero una búsqueda en anchura (BFS)?", options: ["Los vecinos por niveles desde el nodo inicial.", "Solo el nodo con mayor valor.", "La ruta más profunda antes de volver.", "Los nodos en orden alfabético."], correctIndex: 0 },
+    { question: "¿Qué hace una búsqueda en profundidad (DFS)?", options: ["Explora una rama tanto como puede antes de retroceder.", "Visita solo los nodos del primer nivel.", "Ordena los vértices por tamaño.", "Elimina las aristas repetidas."], correctIndex: 0 },
+    { question: "¿Qué propiedad organiza los valores en un heap máximo?", options: ["Cada padre tiene un valor mayor o igual que sus hijos.", "Cada nodo tiene exactamente dos padres.", "Todos los valores aparecen en orden alfabético.", "Cada hoja contiene una clave única."], correctIndex: 0 },
+    { question: "¿Qué describe el análisis amortizado de un algoritmo?", options: ["El costo promedio por operación a lo largo de una secuencia.", "El tiempo de una instrucción en todos los equipos.", "El tamaño máximo de un archivo.", "La cantidad de errores de compilación."], correctIndex: 0 },
+    { question: "¿Qué busca una condición base en la recursividad?", options: ["Detener las llamadas recursivas cuando se alcanza un caso sencillo.", "Crear un nuevo proceso en cada llamada.", "Repetir el caso más complejo.", "Convertir la función en una clase."], correctIndex: 0 },
+    { question: "¿Cuál es la diferencia entre concurrencia y paralelismo?", options: ["La concurrencia organiza tareas que progresan juntas; el paralelismo las ejecuta simultáneamente.", "Son siempre términos idénticos.", "El paralelismo solo existe en bases de datos.", "La concurrencia requiere una única tarea."], correctIndex: 0 },
+    { question: "¿Qué papel cumple el event loop en un entorno asíncrono?", options: ["Coordina tareas pendientes cuando el hilo puede atenderlas.", "Ordena las propiedades de una clase.", "Convierte promesas en archivos HTML.", "Elimina la cola de eventos."], correctIndex: 0 },
+    { question: "¿Qué es una fuga de memoria?", options: ["Memoria que ya no se necesita pero sigue retenida por referencias.", "Una variable que cambia de nombre.", "Un archivo sin datos.", "Una consulta que retorna cero filas."], correctIndex: 0 },
+    { question: "¿Qué implica trabajar con datos inmutables?", options: ["Crear nuevos valores en lugar de modificar los existentes.", "Cambiar cada valor varias veces.", "Guardar todo como texto.", "Evitar el uso de funciones."], correctIndex: 0 },
+    { question: "¿Qué ayuda a detectar un perfilador de rendimiento?", options: ["Las partes del programa que consumen más tiempo o recursos.", "La ortografía de los comentarios.", "Las contraseñas del usuario.", "Los colores de una interfaz."], correctIndex: 0 }
+  ]
+];
+
+const QUESTION_TIME_SECONDS = 20;
+const TYPEWRITER_DELAY_MS = 42;
+const ANSWER_REVEAL_DELAY_MS = 160;
+const PROGRESS_STORAGE_KEY = "aprueba-la-clase-completed-levels";
+const QUESTION_HISTORY_STORAGE_KEY = "aprueba-la-clase-seen-questions";
+const SAVED_GAMES_STORAGE_KEY = "aprueba-la-clase-saved-games";
+const QUESTIONS_PER_LEVEL = 15;
 
 const state = {
   levelIndex: 0,
   questionIndex: 0,
   score: 50,
+  completedLevels: 0,
   totalQuestions: 15,
+  questionOffset: 0,
+  questionDeck: [],
+  answerPositionOrder: [],
+  usedQuestions: new Set(),
+  gameId: null,
   currentLevel: null,
   currentQuestion: null,
   answerLocked: false,
+  isPaused: false,
   options: [],
-  timerId: null
+  timerId: null,
+  questionTypingId: null
 };
 
 const scoreValueEl = document.getElementById("scoreValue");
@@ -206,6 +359,7 @@ const timerFillEl = document.getElementById("timerFill");
 const timerBarEl = timerFillEl.parentElement;
 const levelValueEl = document.getElementById("levelValue");
 const questionValueEl = document.getElementById("questionValue");
+const questionPanelEl = document.getElementById("questionPanel");
 const questionTextEl = document.getElementById("questionText");
 const answersAreaEl = document.getElementById("answersArea");
 const toastEl = document.getElementById("toast");
@@ -214,15 +368,319 @@ const resultTitleEl = document.getElementById("resultTitle");
 const resultTextEl = document.getElementById("resultText");
 const startScreenEl = document.getElementById("startScreen");
 const startButtonEl = document.getElementById("startButton");
+const savedGamesButtonEl = document.getElementById("savedGamesButton");
+const savedGamesScreenEl = document.getElementById("savedGamesScreen");
+const savedGamesBackButtonEl = document.getElementById("savedGamesBackButton");
+const savedGamesListEl = document.getElementById("savedGamesList");
+const savedGamesEmptyEl = document.getElementById("savedGamesEmpty");
+const levelsButtonEl = document.getElementById("levelsButton");
+const levelsScreenEl = document.getElementById("levelsScreen");
+const levelsBackButtonEl = document.getElementById("levelsBackButton");
+const levelsGridEl = document.getElementById("levelsGrid");
+const pauseButtonEl = document.getElementById("pauseButton");
+const pauseOverlayEl = document.getElementById("pauseOverlay");
+const resumeExamButtonEl = document.getElementById("resumeExamButton");
+const exitExamButtonEl = document.getElementById("exitExamButton");
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function getLevelQuestions(levelIndex) {
+  return [...LEVELS[levelIndex].questions, ...RETRY_QUESTIONS[levelIndex]];
+}
+
+function randomInteger(maxExclusive) {
+  const cryptoApi = globalThis.crypto;
+  if (!cryptoApi || typeof cryptoApi.getRandomValues !== "function") {
+    return Math.floor(Math.random() * maxExclusive);
+  }
+
+  const range = 0x100000000;
+  const unbiasedLimit = range - (range % maxExclusive);
+  const randomValue = new Uint32Array(1);
+  do {
+    cryptoApi.getRandomValues(randomValue);
+  } while (randomValue[0] >= unbiasedLimit);
+  return randomValue[0] % maxExclusive;
+}
+
+function shuffle(items) {
+  const shuffledItems = [...items];
+  for (let index = shuffledItems.length - 1; index > 0; index -= 1) {
+    const randomIndex = randomInteger(index + 1);
+    [shuffledItems[index], shuffledItems[randomIndex]] = [
+      shuffledItems[randomIndex],
+      shuffledItems[index]
+    ];
+  }
+  return shuffledItems;
+}
+
+function createAnswerPositionOrder(questionCount, optionCount) {
+  const order = [];
+  for (let index = 0; index < questionCount; index += 1) {
+    let answerPosition;
+    do {
+      answerPosition = randomInteger(optionCount);
+    } while (
+      index >= 3 &&
+      order[index - 1] === answerPosition &&
+      order[index - 2] === answerPosition &&
+      order[index - 3] === answerPosition
+    );
+    order.push(answerPosition);
+  }
+  return order;
 }
 
 function updateHud() {
   scoreValueEl.textContent = String(state.score);
   scoreFillEl.style.width = `${state.score}%`;
   levelValueEl.textContent = String(state.levelIndex + 1);
-  questionValueEl.textContent = `${state.questionIndex + 1} / ${state.totalQuestions}`;
+  questionValueEl.textContent = `${state.questionOffset + state.questionIndex + 1} / ${state.totalQuestions}`;
+}
+
+function loadCompletedLevels() {
+  try {
+    const savedValue = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
+    if (savedValue === null) {
+      return 0;
+    }
+
+    const completedLevels = Number(savedValue);
+    if (Number.isInteger(completedLevels) && completedLevels >= 0 && completedLevels <= LEVELS.length) {
+      return completedLevels;
+    }
+
+    console.error("El progreso guardado tiene un formato no válido.");
+  } catch (error) {
+    console.error("No se pudo cargar el progreso guardado.", error);
+  }
+  return 0;
+}
+
+function saveCompletedLevels() {
+  try {
+    window.localStorage.setItem(PROGRESS_STORAGE_KEY, String(state.completedLevels));
+  } catch (error) {
+    console.error("No se pudo guardar el progreso.", error);
+  }
+}
+
+function loadQuestionHistory() {
+  try {
+    const savedValue = window.localStorage.getItem(QUESTION_HISTORY_STORAGE_KEY);
+    if (savedValue === null) {
+      return new Set();
+    }
+
+    const questions = JSON.parse(savedValue);
+    if (Array.isArray(questions) && questions.every((question) => typeof question === "string")) {
+      return new Set(questions);
+    }
+
+    console.error("El historial de preguntas guardado tiene un formato no válido.");
+  } catch (error) {
+    console.error("No se pudo cargar el historial de preguntas.", error);
+  }
+  return new Set();
+}
+
+function saveQuestionHistory() {
+  try {
+    window.localStorage.setItem(
+      QUESTION_HISTORY_STORAGE_KEY,
+      JSON.stringify([...state.usedQuestions])
+    );
+  } catch (error) {
+    console.error("No se pudo guardar el historial de preguntas.", error);
+  }
+}
+
+function loadSavedGames() {
+  try {
+    const savedValue = window.localStorage.getItem(SAVED_GAMES_STORAGE_KEY);
+    if (savedValue === null) {
+      return [];
+    }
+
+    const savedGames = JSON.parse(savedValue);
+    const isValid = Array.isArray(savedGames) && savedGames.every((game) =>
+      game &&
+      typeof game.id === "string" &&
+      Number.isInteger(game.levelIndex) &&
+      game.levelIndex >= 0 &&
+      game.levelIndex < LEVELS.length &&
+      Number.isFinite(game.score) &&
+      Number.isInteger(game.questionsAnswered) &&
+      Number.isInteger(game.totalQuestions) &&
+      game.questionsAnswered >= 0 &&
+      game.questionsAnswered <= game.totalQuestions &&
+      game.totalQuestions <= QUESTIONS_PER_LEVEL &&
+      Number.isFinite(game.savedAt)
+    );
+    if (isValid) {
+      return savedGames;
+    }
+
+    console.error("La lista de partidas guardadas tiene un formato no válido.");
+  } catch (error) {
+    console.error("No se pudieron cargar las partidas guardadas.", error);
+  }
+  return [];
+}
+
+function storeSavedGames(savedGames) {
+  try {
+    window.localStorage.setItem(SAVED_GAMES_STORAGE_KEY, JSON.stringify(savedGames));
+  } catch (error) {
+    console.error("No se pudieron guardar las partidas.", error);
+  }
+}
+
+function saveActiveGame(questionsAnswered = state.questionOffset + state.questionIndex) {
+  if (!state.gameId) {
+    return;
+  }
+
+  const savedGames = loadSavedGames();
+  const savedGame = {
+    id: state.gameId,
+    levelIndex: state.levelIndex,
+    score: state.score,
+    questionsAnswered,
+    totalQuestions: state.totalQuestions,
+    savedAt: Date.now()
+  };
+  const existingIndex = savedGames.findIndex((game) => game.id === state.gameId);
+  if (existingIndex === -1) {
+    savedGames.unshift(savedGame);
+  } else {
+    savedGames[existingIndex] = savedGame;
+  }
+  storeSavedGames(savedGames);
+}
+
+function deleteSavedGame(gameId) {
+  storeSavedGames(loadSavedGames().filter((game) => game.id !== gameId));
+}
+
+function createGameId() {
+  const cryptoApi = globalThis.crypto;
+  if (cryptoApi && typeof cryptoApi.randomUUID === "function") {
+    return cryptoApi.randomUUID();
+  }
+  return `${Date.now()}-${randomInteger(0x100000000).toString(16)}`;
+}
+
+function renderSavedGames() {
+  const savedGames = loadSavedGames();
+  savedGamesListEl.innerHTML = "";
+  savedGamesEmptyEl.hidden = savedGames.length > 0;
+
+  savedGames.forEach((game) => {
+    const card = document.createElement("article");
+    card.className = "saved-game-card";
+    const info = document.createElement("div");
+    info.className = "saved-game-info";
+
+    const title = document.createElement("strong");
+    title.textContent = LEVELS[game.levelIndex].title;
+    const progress = document.createElement("span");
+    const displayedQuestion = Math.min(game.questionsAnswered + 1, game.totalQuestions);
+    progress.textContent = `Puntos: ${game.score} · Pregunta ${displayedQuestion} / ${game.totalQuestions}`;
+    const savedAt = document.createElement("span");
+    savedAt.textContent = `Guardada: ${new Date(game.savedAt).toLocaleString()}`;
+    info.append(title, progress, savedAt);
+
+    const actions = document.createElement("div");
+    actions.className = "saved-game-actions";
+    const resumeButton = document.createElement("button");
+    resumeButton.type = "button";
+    resumeButton.className = "saved-game-resume";
+    resumeButton.textContent = "Reanudar";
+    resumeButton.addEventListener("click", () => resumeSavedGame(game));
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "saved-game-delete";
+    deleteButton.textContent = "Eliminar";
+    deleteButton.addEventListener("click", () => {
+      deleteSavedGame(game.id);
+      renderSavedGames();
+    });
+    actions.append(resumeButton, deleteButton);
+    card.append(info, actions);
+    savedGamesListEl.appendChild(card);
+  });
+}
+
+function resumeSavedGame(savedGame) {
+  savedGamesScreenEl.classList.add("hidden");
+  startScreenEl.classList.add("hidden");
+  state.isPaused = false;
+  state.gameId = savedGame.id;
+  state.levelIndex = savedGame.levelIndex;
+  state.score = savedGame.score;
+  state.questionOffset = savedGame.questionsAnswered;
+  state.totalQuestions = savedGame.totalQuestions;
+
+  if (state.score >= 100) {
+    finalizeLevel(true);
+    return;
+  }
+  if (state.score <= 0 || savedGame.questionsAnswered >= savedGame.totalQuestions) {
+    finalizeLevel(false);
+    return;
+  }
+
+  startLevel(savedGame.levelIndex, savedGame);
+}
+
+function startNewGame(levelIndex) {
+  state.gameId = createGameId();
+  state.isPaused = false;
+  startLevel(levelIndex);
+}
+
+function renderLevels() {
+  levelsGridEl.innerHTML = "";
+
+  LEVELS.forEach((level, index) => {
+    const isPassed = index < state.completedLevels;
+    const hasUnusedQuestions = getLevelQuestions(index).some(
+      (question) => !state.usedQuestions.has(question.question)
+    );
+    const isAvailable = index <= state.completedLevels && hasUnusedQuestions;
+    const status = !hasUnusedQuestions
+      ? isPassed ? "Aprobado · Agotado" : "Agotado"
+      : isPassed ? "Aprobado" : isAvailable ? "Disponible" : "Bloqueado";
+    const levelButton = document.createElement("button");
+    levelButton.type = "button";
+    levelButton.className = `level-card ${isPassed ? "passed" : isAvailable ? "available" : "locked"}`;
+    levelButton.disabled = !isAvailable;
+    levelButton.setAttribute("aria-label", `${level.title}: ${status}`);
+
+    const levelNumber = document.createElement("span");
+    levelNumber.className = "level-card-number";
+    levelNumber.textContent = `Nivel ${index + 1}`;
+    const levelTitle = document.createElement("span");
+    levelTitle.className = "level-card-title";
+    levelTitle.textContent = level.title.replace(/^Nivel \d+:\s*/, "");
+    const levelStatus = document.createElement("span");
+    levelStatus.className = "level-card-status";
+    levelStatus.textContent = status;
+
+    levelButton.append(levelNumber, levelTitle, levelStatus);
+    if (isAvailable) {
+      levelButton.addEventListener("click", () => {
+        levelsScreenEl.classList.add("hidden");
+        startScreenEl.classList.add("hidden");
+        startNewGame(index);
+      });
+    }
+    levelsGridEl.appendChild(levelButton);
+  });
 }
 
 function stopQuestionTimer() {
@@ -230,6 +688,84 @@ function stopQuestionTimer() {
     clearInterval(state.timerId);
     state.timerId = null;
   }
+}
+
+function stopQuestionTyping() {
+  if (state.questionTypingId !== null) {
+    clearTimeout(state.questionTypingId);
+    state.questionTypingId = null;
+  }
+  questionTextEl.classList.remove("typing");
+  state.options.forEach((option) => option.textEl.classList.remove("typing"));
+}
+
+function typeText(element, text, onComplete) {
+  let visibleCharacters = 0;
+
+  element.textContent = "";
+  element.classList.add("typing");
+  const typeNextCharacter = () => {
+    visibleCharacters += 1;
+    element.textContent = text.slice(0, visibleCharacters);
+
+    if (visibleCharacters === text.length) {
+      element.classList.remove("typing");
+      onComplete();
+      return;
+    }
+
+    state.questionTypingId = setTimeout(typeNextCharacter, TYPEWRITER_DELAY_MS);
+  };
+
+  state.questionTypingId = setTimeout(typeNextCharacter, TYPEWRITER_DELAY_MS);
+}
+
+function revealCard(element) {
+  element.classList.remove("revealing");
+  void element.offsetWidth;
+  element.classList.add("revealing");
+}
+
+function typeQuestionAndOptions(question) {
+  stopQuestionTyping();
+  revealCard(questionPanelEl);
+
+  const revealOptions = (index) => {
+    if (index >= state.options.length) {
+      state.options.forEach((option) => {
+        option.button.disabled = false;
+      });
+      startQuestionTimer();
+      return;
+    }
+
+    const option = state.options[index];
+    revealCard(option.button);
+    typeText(option.textEl, option.text, () => {
+      state.questionTypingId = setTimeout(
+        () => revealOptions(index + 1),
+        ANSWER_REVEAL_DELAY_MS
+      );
+    });
+  };
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    questionTextEl.textContent = question;
+    state.options.forEach((option) => {
+      option.textEl.textContent = option.text;
+      option.button.disabled = false;
+      revealCard(option.button);
+    });
+    startQuestionTimer();
+    return;
+  }
+
+  typeText(questionTextEl, question, () => {
+    state.questionTypingId = setTimeout(
+      () => revealOptions(0),
+      ANSWER_REVEAL_DELAY_MS
+    );
+  });
 }
 
 function startQuestionTimer() {
@@ -273,12 +809,44 @@ function hideResult() {
   resultOverlayEl.classList.add("hidden");
 }
 
-function startLevel(levelIndex) {
+function startLevel(levelIndex, savedGame = null) {
+  pauseButtonEl.disabled = true;
   state.levelIndex = levelIndex;
   state.currentLevel = LEVELS[levelIndex];
+  state.isPaused = false;
+  state.questionOffset = savedGame ? savedGame.questionsAnswered : 0;
+  state.score = savedGame ? savedGame.score : 50;
+  const savedTotalQuestions = savedGame ? savedGame.totalQuestions : QUESTIONS_PER_LEVEL;
+  const remainingQuestionCount = Math.max(0, savedTotalQuestions - state.questionOffset);
+  state.questionDeck = shuffle(
+    getLevelQuestions(levelIndex).filter(
+      (question) => !state.usedQuestions.has(question.question)
+    )
+  ).slice(0, remainingQuestionCount);
+  if (state.questionDeck.length === 0) {
+    if (state.gameId) {
+      deleteSavedGame(state.gameId);
+      state.gameId = null;
+    }
+    showResult("Preguntas agotadas", `Ya respondiste todas las preguntas disponibles de ${state.currentLevel.title}.`);
+    setTimeout(() => {
+      hideResult();
+      startScreenEl.classList.remove("hidden");
+      renderLevels();
+      levelsScreenEl.classList.remove("hidden");
+    }, 1800);
+    return;
+  }
+
+  const optionCount = state.questionDeck.length
+    ? state.questionDeck[0].options.length
+    : 4;
+  state.answerPositionOrder = createAnswerPositionOrder(
+    state.questionDeck.length,
+    optionCount
+  );
   state.questionIndex = 0;
-  state.score = 50;
-  state.totalQuestions = 15;
+  state.totalQuestions = state.questionOffset + state.questionDeck.length;
   updateHud();
   hideResult();
   setTimeout(() => nextQuestion(), 350);
@@ -289,7 +857,15 @@ function buildOptionButton(optionText, index) {
   button.type = "button";
   button.className = "option";
   button.dataset.index = String(index);
-  button.innerHTML = `<span class="letter">${String.fromCharCode(65 + index)}</span>${optionText}`;
+  button.disabled = true;
+
+  const letter = document.createElement("span");
+  letter.className = "letter";
+  letter.textContent = String.fromCharCode(65 + index);
+  const text = document.createElement("span");
+  text.className = "option-text";
+  button.append(letter, text);
+
   button.addEventListener("click", () => handleAnswer(index));
   return button;
 }
@@ -300,28 +876,49 @@ function resetOptions() {
 }
 
 function nextQuestion() {
-  if (state.questionIndex >= state.totalQuestions) {
+  if (state.questionOffset + state.questionIndex >= state.totalQuestions) {
     finalizeLevel(false);
     return;
   }
 
-  const currentLevel = LEVELS[state.levelIndex];
-  const q = currentLevel.questions[state.questionIndex];
+  pauseButtonEl.disabled = false;
+  const sourceQuestion = state.questionDeck[state.questionIndex];
+  state.usedQuestions.add(sourceQuestion.question);
+  saveQuestionHistory();
+  saveActiveGame(state.questionOffset + state.questionIndex);
+  const correctIndex = state.answerPositionOrder[state.questionIndex];
+  const shuffledOptions = shuffle(
+    sourceQuestion.options.filter((_, index) => index !== sourceQuestion.correctIndex)
+  );
+  shuffledOptions.splice(correctIndex, 0, sourceQuestion.options[sourceQuestion.correctIndex]);
+  const q = {
+    ...sourceQuestion,
+    options: shuffledOptions,
+    correctIndex
+  };
   state.currentQuestion = q;
   state.answerLocked = false;
-  questionTextEl.textContent = q.question;
   resetOptions();
 
   q.options.forEach((optionText, index) => {
     const button = buildOptionButton(optionText, index);
-    const optionState = { button, index };
+    const optionState = {
+      button,
+      index,
+      text: optionText,
+      textEl: button.querySelector(".option-text")
+    };
     answersAreaEl.appendChild(button);
     state.options.push(optionState);
-    button.style.top = `${index * 60}px`;
+    button.style.top = `${index * 86}px`;
   });
 
   updateHud();
-  startQuestionTimer();
+  timerValueEl.textContent = String(QUESTION_TIME_SECONDS);
+  timerFillEl.style.width = "100%";
+  timerBarEl.setAttribute("aria-valuenow", String(QUESTION_TIME_SECONDS));
+  timerBarEl.classList.remove("timer-low");
+  typeQuestionAndOptions(q.question);
 }
 
 function applyAnswerFeedback(correct, incorrectMessage = "Respuesta incorrecta") {
@@ -341,11 +938,12 @@ function applyAnswerFeedback(correct, incorrectMessage = "Respuesta incorrecta")
 }
 
 function handleAnswer(selectedIndex) {
-  if (state.answerLocked) {
+  if (state.answerLocked || state.isPaused) {
     return;
   }
 
   state.answerLocked = true;
+  pauseButtonEl.disabled = true;
   stopQuestionTimer();
   state.lastSelectedIndex = selectedIndex;
   const isCorrect = selectedIndex === state.currentQuestion.correctIndex;
@@ -353,27 +951,30 @@ function handleAnswer(selectedIndex) {
   const delta = isCorrect ? level.reward : -level.penalty;
   state.score = clamp(state.score + delta, 0, 100);
   updateHud();
+  saveActiveGame(state.questionOffset + state.questionIndex + 1);
   applyAnswerFeedback(isCorrect);
 
   setTimeout(advanceAfterAnswer, 1200);
 }
 
 function handleTimeout() {
-  if (state.answerLocked) {
+  if (state.answerLocked || state.isPaused) {
     return;
   }
 
   state.answerLocked = true;
+  pauseButtonEl.disabled = true;
   state.lastSelectedIndex = -1;
   const level = LEVELS[state.levelIndex];
   state.score = clamp(state.score - level.penalty, 0, 100);
   updateHud();
+  saveActiveGame(state.questionOffset + state.questionIndex + 1);
   applyAnswerFeedback(false, "Tiempo agotado");
   setTimeout(advanceAfterAnswer, 1200);
 }
 
 function advanceAfterAnswer() {
-  const answeredQuestions = state.questionIndex + 1;
+  const answeredQuestions = state.questionOffset + state.questionIndex + 1;
   if (state.score >= 100) {
     finalizeLevel(true);
     return;
@@ -390,15 +991,20 @@ function advanceAfterAnswer() {
 
 function finalizeLevel(won) {
   stopQuestionTimer();
+  pauseButtonEl.disabled = true;
   if (won) {
-    const isFinalLevel = state.levelIndex === LEVELS.length - 1;
-    if (isFinalLevel) {
+    state.completedLevels = Math.max(state.completedLevels, state.levelIndex + 1);
+    saveCompletedLevels();
+    if (state.completedLevels >= LEVELS.length) {
+      if (state.gameId) {
+        deleteSavedGame(state.gameId);
+        state.gameId = null;
+      }
       showResult("Curso completado", "¡Felicidades! Has aprobado la clase final.");
     } else {
       showResult("Aprobado", `Nivel ${state.levelIndex + 1} superado. Preparando el siguiente reto...`);
       setTimeout(() => {
-        const nextLevel = state.levelIndex + 1;
-        startLevel(nextLevel);
+        startLevel(state.completedLevels);
       }, 1800);
       return;
     }
@@ -416,9 +1022,80 @@ function finalizeLevel(won) {
   }
 }
 
+function pauseExam() {
+  if (state.isPaused || state.answerLocked || !state.currentQuestion) {
+    return;
+  }
+
+  stopQuestionTimer();
+  stopQuestionTyping();
+  state.options.forEach((option) => {
+    option.button.disabled = true;
+  });
+  state.answerLocked = true;
+  state.isPaused = true;
+  pauseButtonEl.disabled = true;
+  toastEl.classList.add("hidden");
+  toastEl.classList.remove("visible");
+  saveActiveGame(state.questionOffset + state.questionIndex);
+  pauseOverlayEl.classList.remove("hidden");
+  resumeExamButtonEl.focus();
+}
+
+function resumePausedExam() {
+  if (!state.isPaused) {
+    return;
+  }
+
+  const questionsAnswered = state.questionOffset + state.questionIndex;
+  pauseOverlayEl.classList.add("hidden");
+  state.isPaused = false;
+  startLevel(state.levelIndex, {
+    score: state.score,
+    questionsAnswered,
+    totalQuestions: state.totalQuestions
+  });
+}
+
+function exitPausedExam() {
+  if (!state.isPaused) {
+    return;
+  }
+
+  state.isPaused = false;
+  pauseOverlayEl.classList.add("hidden");
+  startScreenEl.classList.remove("hidden");
+  startButtonEl.focus();
+}
+
 window.addEventListener("DOMContentLoaded", () => {
+  state.completedLevels = loadCompletedLevels();
+  state.usedQuestions = loadQuestionHistory();
+
   startButtonEl.addEventListener("click", () => {
     startScreenEl.classList.add("hidden");
-    startLevel(0);
+    startNewGame(0);
   });
+
+  levelsButtonEl.addEventListener("click", () => {
+    renderLevels();
+    levelsScreenEl.classList.remove("hidden");
+  });
+
+  levelsBackButtonEl.addEventListener("click", () => {
+    levelsScreenEl.classList.add("hidden");
+  });
+
+  savedGamesButtonEl.addEventListener("click", () => {
+    renderSavedGames();
+    savedGamesScreenEl.classList.remove("hidden");
+  });
+
+  savedGamesBackButtonEl.addEventListener("click", () => {
+    savedGamesScreenEl.classList.add("hidden");
+  });
+
+  pauseButtonEl.addEventListener("click", pauseExam);
+  resumeExamButtonEl.addEventListener("click", resumePausedExam);
+  exitExamButtonEl.addEventListener("click", exitPausedExam);
 });

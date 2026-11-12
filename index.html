@@ -17,6 +17,52 @@
         <button id="startButton" class="start-button" type="button">
           <span class="visually-hidden">Inicio: comenzar el examen</span>
         </button>
+        <button id="levelsButton" class="start-button levels-button" type="button">
+          <span class="visually-hidden">Niveles: ver exámenes aprobados y pendientes</span>
+        </button>
+        <button id="savedGamesButton" class="start-button saved-games-button" type="button">
+          <span class="visually-hidden">Partidas guardadas: ver y reanudar exámenes sin terminar</span>
+        </button>
+      </section>
+
+      <section
+        id="levelsScreen"
+        class="levels-screen hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="levelsTitle"
+      >
+        <div class="levels-panel pixel-card">
+          <div class="levels-heading">
+            <h2 id="levelsTitle">Niveles</h2>
+            <button id="levelsBackButton" class="levels-back-button" type="button">Volver</button>
+          </div>
+          <p class="levels-description">Consulta tu progreso y elige un examen disponible.</p>
+          <div id="levelsGrid" class="levels-grid"></div>
+          <p class="levels-legend">
+            <span>Aprobado</span>
+            <span>Disponible</span>
+            <span>Bloqueado</span>
+          </p>
+        </div>
+      </section>
+
+      <section
+        id="savedGamesScreen"
+        class="levels-screen hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="savedGamesTitle"
+      >
+        <div class="levels-panel pixel-card">
+          <div class="levels-heading">
+            <h2 id="savedGamesTitle">Partidas guardadas</h2>
+            <button id="savedGamesBackButton" class="levels-back-button" type="button">Volver</button>
+          </div>
+          <p class="levels-description">Reanuda un examen pendiente. Al volver, aparecerá una pregunta nueva.</p>
+          <div id="savedGamesList" class="saved-games-list"></div>
+          <p id="savedGamesEmpty" class="saved-games-empty">No tienes partidas sin terminar.</p>
+        </div>
       </section>
 
       <header class="top-ui">
@@ -29,15 +75,15 @@
             <div id="scoreFill" class="progress-fill"></div>
           </div>
           <div class="timer-label">
-            <span>Tiempo: <strong id="timerValue">30</strong>s</span>
+            <span>Tiempo: <strong id="timerValue">20</strong>s</span>
           </div>
           <div
             class="progress-bar timer-bar"
             role="progressbar"
             aria-label="Tiempo restante"
             aria-valuemin="0"
-            aria-valuemax="30"
-            aria-valuenow="30"
+            aria-valuemax="20"
+            aria-valuenow="20"
           >
             <div id="timerFill" class="timer-fill"></div>
           </div>
@@ -50,6 +96,9 @@
           <div class="pill pixel-card">
             <span>Pregunta: <strong id="questionValue">1 / 15</strong></span>
           </div>
+          <button id="pauseButton" class="exam-menu-button" type="button" disabled>
+            Pausar
+          </button>
         </div>
       </header>
 
@@ -70,6 +119,30 @@
           </div>
         </div>
       </main>
+
+      <section
+        id="pauseOverlay"
+        class="pause-overlay hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pauseTitle"
+        aria-describedby="pauseDescription"
+      >
+        <div class="pause-panel pixel-card">
+          <h2 id="pauseTitle">Examen en pausa</h2>
+          <p id="pauseDescription">
+            Al continuar aparecerá una pregunta nueva. Tus puntos y tu progreso no cambiarán.
+          </p>
+          <div class="pause-actions">
+            <button id="resumeExamButton" class="pause-action-button resume-exam-button" type="button">
+              Continuar examen
+            </button>
+            <button id="exitExamButton" class="pause-action-button exit-exam-button" type="button">
+              Salir al inicio
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
 
     <script type="module" src="script.js"></script>
