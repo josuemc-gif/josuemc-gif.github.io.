@@ -185,6 +185,8 @@ const LEVELS = [
   }
 ];
 
+const QUESTION_TIME_SECONDS = 30;
+
 const state = {
   levelIndex: 0,
   questionIndex: 0,
@@ -194,34 +196,14 @@ const state = {
   currentQuestion: null,
   answerLocked: false,
   options: [],
-  frameId: null,
-  lastTimestamp: 0,
-  timeoutTriggered: false,
-  teacherAnimationTimer: null,
-  studentAnimationTimer: null
-};
-
-const SPRITE_ANIMATIONS = {
-  teacher: {
-    "teacher-idle": { row: 0, frames: [0], duration: 150, loop: false },
-    "teacher-active": { row: 0, frames: [0, 1, 2, 3, 4, 5], duration: 150, loop: true },
-    "teacher-angry": { row: 1, frames: [0, 1, 2, 3, 4, 5], duration: 120, loop: false },
-    "teacher-happy": { row: 2, frames: [0, 1, 2, 3, 4, 5], duration: 120, loop: false },
-    "teacher-sad": { row: 3, frames: [0, 1, 2, 3, 4, 5], duration: 140, loop: false },
-    "teacher-approved": { row: 4, frames: [0, 1, 2, 3, 4, 5], duration: 120, loop: false },
-    "teacher-failed": { row: 5, frames: [0, 1, 2, 3, 4, 5], duration: 120, loop: false }
-  },
-  student: {
-    "student-idle": { row: 0, frames: [2], duration: 150, loop: false },
-    "student-correct": { row: 0, frames: [2, 3, 4, 5, 6, 7], duration: 130, loop: false },
-    "student-wrong": { row: 1, frames: [2, 3, 4, 5, 6, 7], duration: 130, loop: false },
-    "student-timedout": { row: 2, frames: [2, 3, 4, 5, 6, 7], duration: 140, loop: false },
-    "student-passed": { row: 3, frames: [2, 3, 4, 5, 6, 7], duration: 130, loop: false }
-  }
+  timerId: null
 };
 
 const scoreValueEl = document.getElementById("scoreValue");
 const scoreFillEl = document.getElementById("scoreFill");
+const timerValueEl = document.getElementById("timerValue");
+const timerFillEl = document.getElementById("timerFill");
+const timerBarEl = timerFillEl.parentElement;
 const levelValueEl = document.getElementById("levelValue");
 const questionValueEl = document.getElementById("questionValue");
 const questionTextEl = document.getElementById("questionText");
@@ -230,9 +212,8 @@ const toastEl = document.getElementById("toast");
 const resultOverlayEl = document.getElementById("resultOverlay");
 const resultTitleEl = document.getElementById("resultTitle");
 const resultTextEl = document.getElementById("resultText");
-const teacherEl = document.getElementById("teacher");
-const studentEl = document.getElementById("student");
-
+const startScreenEl = document.getElementById("startScreen");
+const startButtonEl = document.getElementById("startButton");
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
@@ -244,53 +225,32 @@ function updateHud() {
   questionValueEl.textContent = `${state.questionIndex + 1} / ${state.totalQuestions}`;
 }
 
-function playSpriteAnimation(element, character, mood) {
-  const animations = SPRITE_ANIMATIONS[character];
-  const animation = animations[mood];
-  const timerKey = `${character}AnimationTimer`;
-  const frameWidth = character === "teacher" ? 160 : 144;
-  const frameHeight = character === "teacher" ? 128 : 192;
-
-  if (state[timerKey] !== null) {
-    clearInterval(state[timerKey]);
-    state[timerKey] = null;
+function stopQuestionTimer() {
+  if (state.timerId !== null) {
+    clearInterval(state.timerId);
+    state.timerId = null;
   }
+}
 
-  element.setAttribute("aria-label", mood.replace(/^(teacher|student)-/, "").replace("-", " "));
+function startQuestionTimer() {
+  stopQuestionTimer();
+  const startedAt = performance.now();
 
-  let frameIndex = 0;
-  const renderFrame = () => {
-    const frame = animation.frames[frameIndex];
-    element.style.backgroundPosition = `${-frame * frameWidth}px ${-animation.row * frameHeight}px`;
-  };
-  renderFrame();
+  const updateTimer = () => {
+    const remaining = Math.max(0, QUESTION_TIME_SECONDS - (performance.now() - startedAt) / 1000);
+    timerValueEl.textContent = String(Math.ceil(remaining));
+    timerFillEl.style.width = `${(remaining / QUESTION_TIME_SECONDS) * 100}%`;
+    timerBarEl.setAttribute("aria-valuenow", String(Math.ceil(remaining)));
+    timerBarEl.classList.toggle("timer-low", remaining <= 10);
 
-  if (animation.frames.length === 1 && !animation.loop) {
-    return;
-  }
-
-  state[timerKey] = setInterval(() => {
-    if (frameIndex === animation.frames.length - 1) {
-      if (!animation.loop) {
-        clearInterval(state[timerKey]);
-        state[timerKey] = null;
-        return;
-      }
-      frameIndex = 0;
-    } else {
-      frameIndex += 1;
+    if (remaining === 0) {
+      stopQuestionTimer();
+      handleTimeout();
     }
+  };
 
-    renderFrame();
-  }, animation.duration);
-}
-
-function setTeacherMood(mood) {
-  playSpriteAnimation(teacherEl, "teacher", mood);
-}
-
-function setStudentMood(mood) {
-  playSpriteAnimation(studentEl, "student", mood);
+  updateTimer();
+  state.timerId = setInterval(updateTimer, 100);
 }
 
 function showToast(message, type) {
@@ -321,8 +281,6 @@ function startLevel(levelIndex) {
   state.totalQuestions = 15;
   updateHud();
   hideResult();
-  setTeacherMood("teacher-idle");
-  setStudentMood("student-idle");
   setTimeout(() => nextQuestion(), 350);
 }
 
@@ -339,7 +297,6 @@ function buildOptionButton(optionText, index) {
 function resetOptions() {
   answersAreaEl.innerHTML = "";
   state.options = [];
-  cancelAnimationFrame(state.frameId);
 }
 
 function nextQuestion() {
@@ -352,50 +309,22 @@ function nextQuestion() {
   const q = currentLevel.questions[state.questionIndex];
   state.currentQuestion = q;
   state.answerLocked = false;
-  state.timeoutTriggered = false;
   questionTextEl.textContent = q.question;
   resetOptions();
 
   q.options.forEach((optionText, index) => {
     const button = buildOptionButton(optionText, index);
-    const optionState = {
-      button,
-      index,
-      y: index * 82,
-      speed: 42 + (state.levelIndex * 6) + (state.questionIndex * 0.8)
-    };
+    const optionState = { button, index };
     answersAreaEl.appendChild(button);
     state.options.push(optionState);
-    button.style.transform = `translateX(-50%) translateY(${optionState.y}px)`;
+    button.style.top = `${index * 60}px`;
   });
 
-  setTeacherMood("teacher-active");
-  setStudentMood("student-idle");
   updateHud();
-  animateOptions();
+  startQuestionTimer();
 }
 
-function animateOptions() {
-  if (state.answerLocked) {
-    return;
-  }
-
-  state.options.forEach((option) => {
-    option.y += option.speed * 0.016;
-    option.button.style.transform = `translateX(-50%) translateY(${option.y}px)`;
-  });
-
-  const lastOption = state.options[state.options.length - 1];
-  if (lastOption.y >= 290 && !state.timeoutTriggered) {
-    state.timeoutTriggered = true;
-    handleTimeout();
-    return;
-  }
-
-  state.frameId = requestAnimationFrame(animateOptions);
-}
-
-function applyAnswerFeedback(correct) {
+function applyAnswerFeedback(correct, incorrectMessage = "Respuesta incorrecta") {
   const correctIndex = state.currentQuestion.correctIndex;
 
   state.options.forEach((option) => {
@@ -405,13 +334,9 @@ function applyAnswerFeedback(correct) {
   });
 
   if (correct) {
-    setTeacherMood("teacher-happy");
-    setStudentMood("student-correct");
     showToast("¡Respuesta correcta!", "success");
   } else {
-    setTeacherMood("teacher-angry");
-    setStudentMood("student-wrong");
-    showToast("Respuesta incorrecta", "error");
+    showToast(incorrectMessage, "error");
   }
 }
 
@@ -421,8 +346,8 @@ function handleAnswer(selectedIndex) {
   }
 
   state.answerLocked = true;
+  stopQuestionTimer();
   state.lastSelectedIndex = selectedIndex;
-  cancelAnimationFrame(state.frameId);
   const isCorrect = selectedIndex === state.currentQuestion.correctIndex;
   const level = LEVELS[state.levelIndex];
   const delta = isCorrect ? level.reward : -level.penalty;
@@ -430,26 +355,7 @@ function handleAnswer(selectedIndex) {
   updateHud();
   applyAnswerFeedback(isCorrect);
 
-  setTimeout(() => {
-    const answeredQuestions = state.questionIndex + 1;
-    if (state.score >= 100) {
-      finalizeLevel(true);
-      return;
-    }
-
-    if (state.score <= 0) {
-      finalizeLevel(false);
-      return;
-    }
-
-    if (answeredQuestions >= state.totalQuestions) {
-      finalizeLevel(false);
-      return;
-    }
-
-    state.questionIndex += 1;
-    nextQuestion();
-  }, 1200);
+  setTimeout(advanceAfterAnswer, 1200);
 }
 
 function handleTimeout() {
@@ -458,48 +364,37 @@ function handleTimeout() {
   }
 
   state.answerLocked = true;
-  cancelAnimationFrame(state.frameId);
+  state.lastSelectedIndex = -1;
   const level = LEVELS[state.levelIndex];
   state.score = clamp(state.score - level.penalty, 0, 100);
   updateHud();
-  setTeacherMood("teacher-sad");
-  setStudentMood("student-timedout");
-  showToast("Tiempo agotado", "error");
-  state.options.forEach((option) => {
-    option.button.disabled = true;
-  });
+  applyAnswerFeedback(false, "Tiempo agotado");
+  setTimeout(advanceAfterAnswer, 1200);
+}
 
-  setTimeout(() => {
-    if (state.score >= 100) {
-      finalizeLevel(true);
-      return;
-    }
+function advanceAfterAnswer() {
+  const answeredQuestions = state.questionIndex + 1;
+  if (state.score >= 100) {
+    finalizeLevel(true);
+    return;
+  }
 
-    if (state.score <= 0) {
-      finalizeLevel(false);
-      return;
-    }
+  if (state.score <= 0 || answeredQuestions >= state.totalQuestions) {
+    finalizeLevel(false);
+    return;
+  }
 
-    if (state.questionIndex + 1 >= state.totalQuestions) {
-      finalizeLevel(false);
-      return;
-    }
-
-    state.questionIndex += 1;
-    nextQuestion();
-  }, 1200);
+  state.questionIndex += 1;
+  nextQuestion();
 }
 
 function finalizeLevel(won) {
+  stopQuestionTimer();
   if (won) {
-    setTeacherMood("teacher-approved");
-    setStudentMood("student-passed");
     const isFinalLevel = state.levelIndex === LEVELS.length - 1;
     if (isFinalLevel) {
       showResult("Curso completado", "¡Felicidades! Has aprobado la clase final.");
     } else {
-      setTeacherMood("teacher-failed");
-      setStudentMood("student-wrong");
       showResult("Aprobado", `Nivel ${state.levelIndex + 1} superado. Preparando el siguiente reto...`);
       setTimeout(() => {
         const nextLevel = state.levelIndex + 1;
@@ -510,10 +405,8 @@ function finalizeLevel(won) {
   } else {
     if (state.score <= 0) {
       showResult("Reprobado", `Llegaste a 0 puntos. Vuelve a intentarlo desde el nivel ${state.levelIndex + 1}.`);
-    } else if (state.questionIndex + 1 >= state.totalQuestions) {
-      showResult("Reprobado", `No alcanzaste 100 puntos en el nivel ${state.levelIndex + 1}.`);
     } else {
-      showResult("Reprobado", `Se agotó el tiempo en el nivel ${state.levelIndex + 1}.`);
+      showResult("Reprobado", `No alcanzaste 100 puntos en el nivel ${state.levelIndex + 1}.`);
     }
 
     setTimeout(() => {
@@ -524,5 +417,8 @@ function finalizeLevel(won) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  startLevel(0);
+  startButtonEl.addEventListener("click", () => {
+    startScreenEl.classList.add("hidden");
+    startLevel(0);
+  });
 });

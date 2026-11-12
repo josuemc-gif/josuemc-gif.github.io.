@@ -8,6 +8,17 @@
   </head>
   <body>
     <div id="app">
+      <section
+        id="startScreen"
+        class="start-screen"
+        role="region"
+        aria-label="Pantalla de inicio de Examen Challenge"
+      >
+        <button id="startButton" class="start-button" type="button">
+          <span class="visually-hidden">Inicio: comenzar el examen</span>
+        </button>
+      </section>
+
       <header class="top-ui">
         <div class="score-panel pixel-card">
           <div class="score-label">
@@ -16,6 +27,19 @@
           </div>
           <div class="progress-bar">
             <div id="scoreFill" class="progress-fill"></div>
+          </div>
+          <div class="timer-label">
+            <span>Tiempo: <strong id="timerValue">30</strong>s</span>
+          </div>
+          <div
+            class="progress-bar timer-bar"
+            role="progressbar"
+            aria-label="Tiempo restante"
+            aria-valuemin="0"
+            aria-valuemax="30"
+            aria-valuenow="30"
+          >
+            <div id="timerFill" class="timer-fill"></div>
           </div>
         </div>
 
@@ -32,19 +56,11 @@
       <main class="classroom-scene">
         <div class="classroom-bg"></div>
 
-        <div class="teacher-stage">
-          <div id="teacher" class="teacher-sprite" role="img" aria-label="Profesor examinador"></div>
-        </div>
-
         <div class="question-panel pixel-card" id="questionPanel">
           <span id="questionText">Cargando pregunta...</span>
         </div>
 
         <div id="answersArea" class="answers-area"></div>
-
-        <div class="student-stage">
-          <div id="student" class="student-sprite" role="img" aria-label="Alumno sentado"></div>
-        </div>
 
         <div id="toast" class="toast hidden"></div>
         <div id="resultOverlay" class="result-overlay hidden">
